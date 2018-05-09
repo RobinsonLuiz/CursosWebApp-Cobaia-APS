@@ -4,26 +4,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.crypto.Data;
+import cobaia.Annotations.Colunas;
+import cobaia.Validations.ConstructorValidator;
 
 public abstract class AbstractModel {
-
 	private Map<String,String> erros = new HashMap<>();
 	
-	protected abstract void validar();
+	ConstructorValidator v = new ConstructorValidator();
 	
-	protected void addErro(String erro,String mensagem) {
-		erros.put(erro, mensagem);
+	//protected abstract void validar();
+	public void validar() throws Exception {
+		v.validate(this);
 	}
 	
-	protected void verificaLength(String nome,String campo,int min,int max) {
-		if (campo == null || campo.isEmpty()) {
-			addErro(nome,"o " + nome + "não pode ser vazio");
-		} else {
-			if (campo.length() < min || campo.length() > max) 
-				addErro(nome,"o " + nome + " deve conter entre " + 
-						min + " e " + max + " caracteres");
-		}
+	@Colunas
+	protected Integer id;
+	
+	public void addErro(String erro,String mensagem) {
+		erros.put(erro, mensagem);
 	}
 	
 	public boolean isValido() {
@@ -35,7 +33,6 @@ public abstract class AbstractModel {
 	}
 	
 	protected void verificaSenha(String nome, String senha, String senha2,int i, int j) {
-		verificaLength(nome, senha, i, j);
 		int cont = 0;
 		int cont2 = 0;
 		for (int j2 = 0; j2 < senha.length(); j2++) {
@@ -48,17 +45,13 @@ public abstract class AbstractModel {
 		if (cont2 == 0 && cont == 0) addErro(nome,"a senha deve ter pelo menos uma letra maiscula e um número");
 	}
 	
-	protected void verificaEmail(String nome,String email) {
-		if (email.isEmpty()) addErro(nome,"email não pode estar vazio");
-		if (!email.matches("[\\w._]+@\\w+(\\.\\w+)+")) addErro(nome,"email não está correto");
-	}
-	
 	protected void verificaHorario(String nome,Date horarioinicio,Date horariofinal) {
 		if (horarioinicio == null) addErro(nome,"o " + nome + " inicial não pode ser nulo");
 		if (horariofinal == null) addErro(nome,"o " + nome + " final não pode ser nulo");
 		if (horarioinicio.after(horariofinal)) addErro(nome,"o " + horarioinicio + " não pode ser superior ao " + horariofinal );
 	}
 	
+	@SuppressWarnings("unused")
 	protected void verificaData(String nome,Date datainicio,Date datafinal) {
 		Date data = new Date(System.currentTimeMillis());
 		if (datainicio.before(data)) addErro(nome,"a " + nome + " inicial não pode ser inferior a data atual do sistema");
@@ -67,4 +60,33 @@ public abstract class AbstractModel {
 		if (datafinal == null) addErro(nome,"a " + nome + " final não pode ser nulo");
 		if (datainicio.after(datafinal)) addErro(nome,"a " + datainicio + " não pode ser superior ao " + datafinal );
 	}
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	public boolean isPersistente() {
+		return this.id != null;
+	}
+	
+	public boolean save() throws Exception {
+		validar();
+		System.out.println(getErros());
+		if (isValido()) {
+			doSave();
+			return true;
+		}
+		return false;
+	}
+	
+	public abstract AbstractModel load(Integer c) throws ClassNotFoundException;
+	
+	protected abstract void doSave();
+	
+	protected abstract void delete(int id);
 }

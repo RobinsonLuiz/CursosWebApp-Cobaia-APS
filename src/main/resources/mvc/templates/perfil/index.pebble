@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>WebApp</title>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="#">WebApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/mvc/index">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mvc/curso">Cursos</a>
+        </li>        
+      </ul>
+      <form class="form-inline mt-2 mt-md-0">
+      	{% if usuario is not null %}
+        <a class="btn btn-primary mr-3" href="#">
+          <i class="btn btn-outline-info my-2 my-sm-0"></i>
+          Saldo - {{ usuario.saldo }} R$
+        </a>
+        <a class="btn btn-primary mr-3" href="/mvc/perfil">
+      		<i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      		{{ usuario.nome }}
+      	</a>
+      	<a href="/mvc/login/logout" class="btn btn-outline-danger my-2 my-sm-0 mr-1">
+        	Logout
+        </a>
+      	{% else %}
+        <a href="/mvc/login" class="btn btn-outline-success my-2 my-sm-0 mr-1">
+        	Login
+        </a>
+        <a href="/mvc/registro" class="btn btn-outline-info my-2 my-sm-0">
+        	Registrar-se
+        </a>
+        {% endif %}
+      </form>
+    </div>
+  </nav>
+
+  <main role="main" class="container">
+    
+    <h3>Meus cursos</h3>
+      <div class="card-deck">
+      {% for c in cursos %}
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="card">
+            <img class="card-img-top" data-nope="holder.js/100px180/" alt="100x180" style="height: 180px; width: 100%; display: block;" 
+            src=
+            {% if c.temImagem  %} 
+              "curso/imagem/{{c.id}}" 
+            {% else %} 
+              "curso/imagem/area/{{c.area}}.png" 
+            {% endif %}>
+            <div class="card-body">
+              <h4 class="card-title">{{c.nome}}</h4>
+              <p class="card-text">{{c.resumo}}</p>
+              <a href="/mvc/curso/busca/{{c.id}}" class="card-link">Ver mais...</a>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div>Nenhum curso encontrado</div>
+      {% endfor %} 
+    </div> 
+  </main>
+
+</body>
+</html>

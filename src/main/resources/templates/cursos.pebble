@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>K0B414</title>
+<title>WebApp</title>
 <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
 <script type="text/javascript" src="js/holder.min.js"></script>
 <body>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-    <a class="navbar-brand" href="#">K0B414</a>
+    <a class="navbar-brand" href="#">WebApp</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,20 +24,24 @@
         </li>
       </ul>
       <form class="form-inline mt-2 mt-md-0">
-      	{% if usuario %}
-      	<span>
-      		<i class="fa fa-user-circle-o" aria-hidden="true"></i>
-      		{{ usuario }}
-      	</span>
-      	<a href="/logout" class="btn btn-outline-danger my-2 my-sm-0 mr-1">
-        	Logout
+        {% if usuario is not null %}
+        <a class="btn btn-primary mr-3" href="/perfil">
+          <i class="btn btn-outline-info my-2 my-sm-0"></i>
+          Saldo - {{ saldo }} R$
         </a>
-      	{% else %}
+        <a class="btn btn-primary mr-3" href="/perfil">
+          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          {{ usuario }}
+        </a>
+        <a href="/logout" class="btn btn-outline-danger my-2 my-sm-0 mr-1">
+          Logout
+        </a>
+        {% else %}
         <a href="/login" class="btn btn-outline-success my-2 my-sm-0 mr-1">
-        	Login
+          Login
         </a>
         <a href="/registro" class="btn btn-outline-info my-2 my-sm-0">
-        	Registrar-se
+          Registrar-se
         </a>
         {% endif %}
       </form>
@@ -64,9 +68,9 @@
     {% endif %}
 
     <h3>Cursos abertos</h3>
-
     <div class="card-deck">
       {% for c in cursos %}
+
         <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="card">
             <img class="card-img-top" data-nope="holder.js/100px180/" alt="100x180" style="height: 180px; width: 100%; display: block;" 
@@ -80,6 +84,7 @@
               <h4 class="card-title">{{c.nome}}</h4>
               <p class="card-text">{{c.resumo}}</p>
               <a href="/curso/{{c.id}}" class="card-link">Ver mais...</a>
+              {{ c.preco | moeda | raw }} 
             </div>
           </div>
         </div>

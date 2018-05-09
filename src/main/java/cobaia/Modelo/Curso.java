@@ -1,29 +1,52 @@
 package cobaia.Modelo;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.servlet.http.Part;
+import java.util.HashMap;
+import java.util.Map;
 
+import cobaia.Annotations.Colunas;
+import cobaia.Annotations.FK;
+import cobaia.Annotations.Tabela;
+import cobaia.Annotations.ValidaLength;
+import cobaia.persistencia.GenericDAO;
+
+@Tabela(nome = "cursos")
 public class Curso extends AbstractModel {
-
+	
+	@Colunas @ValidaLength(min = 5, max = 20)
 	private String nome; 
+	@Colunas @ValidaLength(min = 10,max = 10000)
 	private String resumo;
-	private Integer inscritos;
-	private int vaga;
-	private Area area = new Area();
-	private int carga_horaria; 
+	@Colunas
+	private int vagas;
+	@Colunas
+	private Integer carga_horaria; 
+	@Colunas
 	private Date data_inicio; 
+	@Colunas
 	private Date data_termino; 
+	@Colunas
 	private String dias; 
-	private Date horario_inicio; 
-	private Date horario_termino; 
+	@Colunas
+	private Time horario_inicio; 
+	@Colunas
+	private Time horario_termino; 
+	@Colunas
 	private String programa; 
-	private Part imagem;
+	@Colunas
+	private byte[] imagem;
 	private InputStream imagemInputStream = null;
-    private String tipoImagem = null; 
-	private Integer id;
+	@Colunas
+	private String tipo_Imagem = null; 
+	@Colunas @FK(nome = "id_area")
+	private Area area;	
+	@Colunas
+	private Double preco;
+	private Integer inscritos;
+    private GenericDAO dao = new GenericDAO();
 	
 	public String getNome() {
 		return nome;
@@ -42,19 +65,19 @@ public class Curso extends AbstractModel {
 	}
 	
 	public int getVaga() {
-		return vaga;
+		return vagas;
 	}
 	
-	public void setVaga(int vaga) {
-		this.vaga = vaga;
+	public void setVaga(Integer invalid) {
+		this.vagas = invalid;
 	}
 	
 	public int getCarga_horaria() {
 		return carga_horaria;
 	}
 	
-	public void setCarga_horaria(int carga_horaria) {
-		this.carga_horaria = carga_horaria;
+	public void setCarga_horaria(Integer invalid) {
+		this.carga_horaria = invalid;
 	}
 	
 	public java.util.Date getData_inicio() {
@@ -81,19 +104,19 @@ public class Curso extends AbstractModel {
 		this.dias = string;
 	}
 	
-	public Date getHorario_inicio() {
+	public Time getHorario_inicio() {
 		return horario_inicio;
 	}
 	
-	public void setHorario_inicio(Date Date) {
+	public void setHorario_inicio(Time Date) {
 		this.horario_inicio = Date;
 	}
 	
-	public Date getHorario_termino() {
+	public Time getHorario_termino() {
 		return horario_termino;
 	}
 	
-	public void setHorario_termino(Date date) {
+	public void setHorario_termino(Time date) {
 		this.horario_termino = date;
 	}
 	
@@ -105,53 +128,14 @@ public class Curso extends AbstractModel {
 		this.programa = string;
 	}
 	
-	public Part getImagem() {
+	public byte[] getImagem() {
 		return imagem;
 	}
 	
-	public void setImagem(Part part) {
-		this.imagem = part;
+	public void setImagem(byte[] b) {
+		this.imagem = b;
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	@Override
-	public void validar() {
-		if (this.imagem.getSize() > 0) {
-	          try {
-				imagemInputStream = imagem.getInputStream();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        tipoImagem = imagem.getContentType().split("/")[1];
-	          //Image reader = new Image(imagemInputStream);
-	          // return reader.getWidth() + "/" + reader.getHeight();
-	        }
-		
-        verificaLength("nome",this.nome, 5, 50);
-        
-        verificaLength("resumo",this.resumo,10,1000);
-        
-        if (this.getVaga() < 1) addErro("vagas","a vaga não pode ser inferior a 1");
-       
-        if (this.getCarga_horaria() < 10) addErro("cargahorario","a carga horario tem que ser superior a 10");
-        
-        if (this.getDias() == null || this.getDias().length() == 0) addErro("dias","por favor selecione pelo menos um dia da semana");
-        
-        if (this.area.getId() == null) addErro("area","por favor escolhe uma área para o curso");
-        
-        verificaData("data",this.getData_inicio(),this.getData_termino()); 
-        
-        verificaHorario("horario",this.getHorario_inicio(),this.getHorario_termino());
-	}
-
 	public InputStream getImagemInputStream() {
 		return imagemInputStream;
 	}
@@ -161,11 +145,11 @@ public class Curso extends AbstractModel {
 	}
 
 	public String getTipoImagem() {
-		return tipoImagem;
+		return tipo_Imagem;
 	}
 
 	public void setTipoImagem(String tipoImagem) {
-		this.tipoImagem = tipoImagem;
+		this.tipo_Imagem = tipoImagem;
 	}
 
 	public Area getArea() {
@@ -182,6 +166,59 @@ public class Curso extends AbstractModel {
 
 	public void setInscritos(Integer inscritos) {
 		this.inscritos = inscritos;
+	}
+
+	public Double getPreco() {
+		return preco;
+	}
+	
+	@Override
+	protected void doSave() {
+		dao.persiste(this);
+	}
+
+	@Override
+	public Curso load(Integer cod) throws ClassNotFoundException {
+		Map<Integer,ArrayList<Object>> cursos = new HashMap<>();
+		Curso curso = new Curso();
+		cursos = dao.select(this.getClass().getName(), cod);
+		for (int i = 0; i < cursos.size(); i++) {
+			int k = 0;
+			curso.setId((Integer) cursos.get(i).get(k));
+			curso.setNome((String) cursos.get(i).get(++k));
+			curso.setResumo((String) cursos.get(i).get(++k));
+			curso.setVaga((Integer) cursos.get(i).get(++k));
+			curso.setCarga_horaria((Integer) cursos.get(i).get(++k));
+			curso.setData_inicio((Date) cursos.get(i).get(++k));
+			curso.setData_termino((Date) cursos.get(i).get(++k));
+			curso.setDias((String) cursos.get(i).get(++k));
+			curso.setHorario_inicio((Time) cursos.get(i).get(++k));
+			curso.setHorario_termino((Time) cursos.get(i).get(++k));
+			curso.setPrograma((String) cursos.get(i).get(++k));
+			curso.setImagem(null);
+			k++;
+			curso.setTipoImagem((String) cursos.get(i).get(++k));
+			curso.setArea(new Area().load((Integer) cursos.get(i).get(++k)));
+			curso.setPreco((Double.parseDouble(cursos.get(i).get(++k).toString())));
+		}
+		return curso;
+	}
+
+	@Override
+	public String toString() {
+		return "Curso [id = " + id + " nome=" + nome + ", resumo=" + resumo + ", inscritos=" + inscritos + ", vaga=" + vagas + ", area="
+				+ area + ", carga_horaria=" + carga_horaria + ", data_inicio=" + data_inicio + ", data_termino="
+				+ data_termino + ", dias=" + dias + ", horario_inicio=" + horario_inicio + ", horario_termino="
+				+ horario_termino + "]";
+	}
+
+	@Override
+	protected void delete(int id) {
+		dao.delete(this.getClass().getName(),id);
+	}
+
+	public void setPreco(Double preco) {
+		this.preco = preco;
 	}
 
 }

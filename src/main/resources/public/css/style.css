@@ -1,17 +1,22 @@
-div.header {
-	padding-top: 2em;
-	padding-bottom: 1em;
-	margin-bottom: 2em;
+span.reais {
+	color:green;
+	font-size: 28px;
 }
 
-.navbar-static-top {
-  margin-bottom: 19px;
+span.centavos {
+	color:green;
+	font-size: 25px;
 }
 
-body {
-  min-height: 75rem;
+span.simbolo {
+	color:green;
+	font-style: bold;
 }
 
-h3, .description {
-	margin: 1em 0;
+span.gratuito {
+	font-size: 28px;
+	color:green;
+}
+div.desfazerinsc {
+	margin-left: 15px;
 }

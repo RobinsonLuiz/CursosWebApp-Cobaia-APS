@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>WebApp</title>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<style type="text/css">
+form.login {
+	max-width: 350px;
+	margin: 0 auto;
+	padding-top: 2em;
+}
+</style>
+<body>
+	
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="#">WebApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+      <form class="form-inline mt-2 mt-md-0">
+      </form>
+    </div>
+  </nav>
+
+  <main role="main" class="container">
+    <form method="post" action="/admin" class="form login">
+			<div class="form-group">
+				<label for="email">Login</label> 
+				<input type="text" id="email" autofocus="autofocus"
+					name="email" class="form-control" maxlength="100" size="60">
+			</div>
+			<div class="form-group">
+				<label for="senha">Senha:</label> 
+				<input type="password" id="senha"
+					name="senha" class="form-control" maxlength="50" size="50">
+			</div>
+			<button type="submit" class="btn btn-large btn-outline-primary">
+				<i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp; Login
+			</button>
+		</form>
+
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
